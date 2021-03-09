@@ -20,7 +20,8 @@ namespace GED
         public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, ILogger log)
         {
             string httpPostData = string.Empty;
-
+            ClientContext ctx = SPConnection.GetSPOLContext("https://ghtpdfr.sharepoint.com/sites/ged");
+            SPFunctions.getStatus(ctx, 18, "GED");
             var reader = new StreamReader(req.Content.ReadAsStreamAsync().Result);
             if (reader != null)
             {
@@ -40,8 +41,7 @@ namespace GED
                 string webUrl = xmlDoc.GetElementsByTagName("WebUrl")[0].InnerText;
                 int listItemId = int.Parse(xmlDoc.GetElementsByTagName("ListItemId")[0].InnerText);
             }
-            ClientContext ctx = SPConnection.GetSPOLContext("https://ghtpdfr.sharepoint.com/sites/ged");
-            SPFunctions.getStatus(ctx, 2, "Library%20GED");
+         
 
             return req.CreateResponse(HttpStatusCode.OK, "Succeeded");
 
