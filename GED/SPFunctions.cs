@@ -34,70 +34,76 @@ namespace GED
             switch (status)
             {
                 case "Brouillon":
-                    // SPPermission(ctx, item, "modify", (FieldUserValue[])item["Author"], false);
+                    SPPermissionAuteur(ctx, item, "modify", (FieldUserValue)item["Author"], false);
                     SPPermission(ctx, item, "modify", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], false);
                     SendEmail(ctx, (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], "GED - Un document à été créé", 1, (FieldUserValue[])item["Email_x0020_envoy_x00e9__x0020_au_x0028_x_x0029__x0020_R_x00e9_dacteur_x0028_s_x0029_"],item);
                     UpdateReceivedEmail(ctx, "Redacteur", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], listName, Id);
-                    if(envoi  == "Oui" && Cycle.Contains("Rédaction/Validation"))
+                    if(envoi  == "True" && Cycle.Contains("Rédaction/Validation"))
                     {
                         item["Etat"] = "En attente de validation";
                         item.Update();
 
                     }
-                    if(envoi == "Oui" && !Cycle.Contains("Rédaction/Validation"))
+                    if(envoi == "True" && !Cycle.Contains("Rédaction/Validation"))
                     {
                         item["Etat"] = "En attente de vérification";
                         item.Update();
                     }
                     break;
                 case "En attente de vérification":
-                    SPPermission(ctx, item, "read", (FieldUserValue[])item["Author"], false);
+                    SPPermissionAuteur(ctx, item, "read", (FieldUserValue)item["Author"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], false);
                     SPPermission(ctx, item, "modify", (FieldUserValue[])item["V_x00e9_rificateurs"], false);
                     SendEmail(ctx, (FieldUserValue[])item["V_x00e9_rificateurs"], "GED - Demande de vérification d'un document",2, (FieldUserValue[])item["Email_x0020_envoy_x00e9__x0020_au_x0028_x_x0029__x0020_V_x00e9_rificateur_x0028_s_x0029_"],item);
                     UpdateReceivedEmail(ctx, "Verificateur", (FieldUserValue[])item["V_x00e9_rificateurs"], listName, Id);
                     break;
                 case "En attente de validation":
-                    SPPermission(ctx, item, "read", (FieldUserValue[])item["Author"], false);
+                    SPPermissionAuteur(ctx, item, "read", (FieldUserValue)item["Author"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["V_x00e9_rificateurs"], false);
                     SPPermission(ctx, item, "modify", (FieldUserValue[])item["Validateur_x0028_s_x0029_"], false);
-                    SendEmail(ctx, (FieldUserValue[])item["V_x00e9_rificateurs"], "subject",  2, (FieldUserValue[])item["Email_x0020_envoy_x00e9__x0020_aux_x0020_V_x00e9_rificateur_x0028_s_x0029_"],item);
+                    SendEmail(ctx, (FieldUserValue[])item["V_x00e9_rificateurs"], "GED - Un document est en attente de validation",  2, (FieldUserValue[])item["Email_x0020_envoy_x00e9__x0020_aux_x0020_V_x00e9_rificateur_x0028_s_x0029_"],item);
                     UpdateReceivedEmail(ctx, "Validateur", (FieldUserValue[])item["Validateur_x0028_s_x0029_"], listName, Id);
                     break;
                 case "En attente de publication":
-                    SPPermission(ctx, item, "read", (FieldUserValue[])item["Author"], false);
+                    SPPermissionAuteur(ctx, item, "read", (FieldUserValue)item["Author"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["V_x00e9_rificateurs"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["Validateur_x0028_s_x0029_"], false);
                     break;
                 case "Publié":
-                    SPPermission(ctx, item, "read", (FieldUserValue[])item["Author"], false);
+                    SPPermissionAuteur(ctx, item, "read", (FieldUserValue)item["Author"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["V_x00e9_rificateurs"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["Validateur_x0028_s_x0029_"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], false);
-                    SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], "Subject", 1,(FieldUserValue[])item["Email_x0020_Cible_x0020_indiv_x0020_info"],item);
+                    //Cible individuel info
+                    SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], "GED - Nouveau document publié", 3,(FieldUserValue[])item["Email_x0020_Cible_x0020_indiv_x0020_info"],item);
                     UpdateReceivedEmail(ctx, "CibleIndvInfo", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], listName, Id);
-                    SPPermission(ctx, item, "read", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], false);
+                    //cible collective info
+                    //SPPermission(ctx, item, "read", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], false);
                     // call async function
                     //SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information"], "Subject", "from", "body", emptyuser);
                     CibleIDs = GetTaxonomiesId(item, "Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_information");
                     foreach(string CibleID in CibleIDs)
                     {
-                        Task<string> test =callEmailAzAsync("wf_Get-Emails-from-CH-Pole-UF", CibleID);
+                        Task<string> test =CallEmailAzAsync("wf_Get-Emails-from-CH-Pole-UF", CibleID);
 
                     }
-                    SPPermission(ctx, item, "read", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], true);
-                    SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], "Subject", 1, emptyuser,item);
+
+                    //cible collective application
+                    //SPPermission(ctx, item, "read", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], true);
+                    //SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_collective_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], "Subject", 1, emptyuser,item);
+                    
+                    //cible individuel application
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], true);
-                    SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], "Subject", 1, (FieldUserValue[])item["Email_x0020_Cible_x0020_indiv_x0020_application"],item);
+                    SendEmail(ctx, (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], "GED - Nouveau document publié", 4, (FieldUserValue[])item["Email_x0020_Cible_x0020_indiv_x0020_application"],item);
                     UpdateReceivedEmail(ctx, "CibleIndvApp", (FieldUserValue[])item["Cible_x0028_s_x0029__x0020_individuelle_x0028_s_x0029__x0020_de_x0020_la_x0020_diffusion_x0020_pour_x0020_application"], listName, Id);
 
                     break;
                 case "En attente de révision":
-                    SendEmail(ctx, (FieldUserValue[])item["Author"], "Subject", 1, emptyuser,item);
-                    SPPermission(ctx, item, "modify", (FieldUserValue[])item["Author"], false);
+                    SendEmail(ctx, (FieldUserValue[])item["Author"], "Subject", 5, emptyuser,item);
+                    SPPermissionAuteur(ctx, item, "modify", (FieldUserValue)item["Author"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["R_x00e9_dacteur_x0028_s_x0029_"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["V_x00e9_rificateurs"], false);
                     SPPermission(ctx, item, "read", (FieldUserValue[])item["Validateur_x0028_s_x0029_"], false);
@@ -142,6 +148,30 @@ namespace GED
             
         }
 
+        public static void SPPermissionAuteur(ClientContext ctx, ListItem item, string role, FieldUserValue user, bool createADL)
+        {
+            
+            
+                User userpermission = ctx.Web.SiteUsers.GetById(user.LookupId);
+                item.BreakRoleInheritance(true, true);
+                RoleDefinitionBindingCollection collRoleDefinitionBinding = new RoleDefinitionBindingCollection(ctx);
+                if (createADL)
+                {
+                    AddAccusseDeLecture(ctx, item.Id, item.DisplayName, userpermission);
+                }
+                if (role == "modify")
+                {
+                    collRoleDefinitionBinding.Add(ctx.Web.RoleDefinitions.GetByType(RoleType.Contributor)); //Set permission type
+
+                }
+                else if (role == "read")
+                {
+                    collRoleDefinitionBinding.Add(ctx.Web.RoleDefinitions.GetByType(RoleType.Reader)); //Set permission type
+                }
+                item.RoleAssignments.Add(userpermission, collRoleDefinitionBinding);
+            
+
+        }
         public static void AddAccusseDeLecture (ClientContext ctx , int docID ,  string docName ,User lecteur)
         {
             //ListItem itemToAdd = list.AddItem(itemInfo);
@@ -199,9 +229,18 @@ namespace GED
                 
                 if (notcontain)
                 {
+                    
                     List<string> usersEmail = new List<string> { };
                     usersEmail.Add(user.Email.ToString());
-                    string body = EmailBody(index, item,user.Email.ToString());
+                    string body = "";
+                    if (index == 4)
+                    {
+                        body = EmailBody(index, item, user.Email.ToString(), users);
+                    }
+                    else
+                    {
+                        body = EmailBody(index, item, user.Email.ToString());
+                    }
                     try
                     {
                         using (ctx)
@@ -286,19 +325,19 @@ namespace GED
         }
 
 
-        public static async Task<string> callEmailAzAsync(string wfName, string termGuid)
+        public static async Task<string> CallEmailAzAsync(string wfName, string termGuid)
         {
-            string ve = string.Empty;
+            string result = string.Empty;
             string body = "{\"managedmetadataID \": \"" + termGuid + "\"}";
-            // string url = "https://prod-08.francecentral.logic.azure.com:443/workflows/9085e566a0c64c6ca3a48811f215d975/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IOg706o5XUEfo3RIjLQLOaSZi3uqoCKxjqPFc8y6Vwk";
-            string url = GetAppSetting("wf_Get-Emails-from-CH-Pole-UF");
+            string url = "https://prod-08.francecentral.logic.azure.com:443/workflows/9085e566a0c64c6ca3a48811f215d975/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IOg706o5XUEfo3RIjLQLOaSZi3uqoCKxjqPFc8y6Vwk";
+            //string url = GetAppSetting("wf_Get-Emails-from-CH-Pole-UF");
             using (var httpClient = new HttpClient())
             {
                 var content = new StringContent(body, Encoding.UTF8, "application/json");
-                var response = httpClient.PostAsync(url, content).Result;
-                string result = response.Content.ReadAsStringAsync().Result;
+                var response =  httpClient.PostAsync(url, content).Result;
+                result = response.Content.ReadAsStringAsync().Result;
             }
-            return ve;
+            return result;
         }
         //public static string GetTaxonomyId(ListItem item, string fieldName)
         //{
@@ -309,39 +348,40 @@ namespace GED
         public static List<string> GetTaxonomiesId(ListItem item, string fieldName)
         {
             List<string> Ids = new List<string>();
-            TaxonomyFieldValue[] taxFieldValues = item[fieldName] as TaxonomyFieldValue[];
-
-            foreach (TaxonomyFieldValue taxFieldValue in taxFieldValues)
-
+            string er = item[fieldName].ToString();
+           System.Collections.Generic.Dictionary<System.String, System.Object> sds = item[fieldName] as System.Collections.Generic.Dictionary<System.String, System.Object>;
+            TaxonomyFieldValueCollection taxFieldValues = sds.ElementAt(1).Value as TaxonomyFieldValueCollection;
+            object[] DSD = sds.ElementAt(1).Value as object[];
+            foreach (Dictionary<System.String, System.Object> dic in DSD)
             {
 
-                Ids.Add(taxFieldValue.TermGuid);
+                Ids.Add(dic["TermGuid"].ToString());
 
             }
             return Ids;
         }
 
-        public static string EmailBody(int index, ListItem item, string useremail)
+        public static string EmailBody(int index, ListItem item, string useremail,FieldUserValue[] users = null)
         {
             string body = "";
             if (index == 1)
             {
                 body = @"Bonjour,
-                        Un document à été créé dans la bibliothèque GED: 
-                        " +
+                        Un document à été créé dans la bibliothèque GED: <br/><br/>
+                            " +
                           item.ServerRedirectedEmbedUrl + "";
 
             }
             else if (index == 2)
             {
                 body = @"Bonjour,
-                        Un document demande à être vérifié dans la bibliothèque GED:
-                        " + item.ServerRedirectedEmbedUrl + @"
+                        Un document demande à être vérifié dans la bibliothèque GED: <br/><br/><br/>
+                        " + item.ServerRedirectedEmbedUrl + @" <br/><br/>
 
                         Si vous jugez que le document est vérifié et doit passer en validation, veuillez cliquer sur ce lien:
                         
                         https://prod-30.francecentral.logic.azure.com/workflows/6ba778559279416580dd5c3cfdef3213/triggers/manual/paths/invoke/" + useremail + "/" + item.Id + "/" + item["Etat"].ToString() + "/true?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BiOqRLe2hB-pDrBG-hWVk2KMdiD_4wuEE96hiZVEWws" +
-                        @"
+                        @" <br/><br/>
                         
                         Sinon, veuillez cliquer sur ce lien:
                         
@@ -351,14 +391,32 @@ namespace GED
             }
             else if (index == 3)
             {
-                if (index == 1)
-                {
+                
                     body = @"Bonjour,
-                            Un document a été publié dans la bibliothèque GED:
+                            Un document a été publié dans la bibliothèque GED:<br/><br/>
                         " +
                               item.ServerRedirectedEmbedUrl + "";
 
-                }
+               
+            }
+            else if(index == 4)
+            {
+                body = @"Bonjour,
+                        Un document a été publié dans la bibliothèque GED:<br/><br/>
+                        " + item.ServerRedirectedEmbedUrl + @"
+                        
+                        Veuillez cliqer sur ce lien pour valider la lecture du document:<br/><br/>
+
+                        https://prod-10.francecentral.logic.azure.com/workflows/39c7e411b3bb4c7f9bd122bbffe5f170/triggers/manual/paths/invoke/" + users.First().LookupId + "/" + item.Id + "?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=mG931Fl_dDU6s02Z5XJ7wdY-DfmPrj-t6-chxiLcs6A";
+
+            }
+            else if(index == 5)
+            {
+                body = @"Bonjour,
+                        Votre document est en attente de révisio:<br/><br/>
+                        " + item.ServerRedirectedEmbedUrl + @"
+                        ";
+                   
             }
             return body;
         }
